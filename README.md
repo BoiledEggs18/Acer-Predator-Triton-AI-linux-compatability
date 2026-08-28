@@ -1,12 +1,42 @@
 # Acer Predator Triton AI RGB Reverse Engineering
+
+> [!NOTE]
+> A kernel driver is **in progress** with [basic LampArray support](https://lore.kernel.org/linux-input/20260828144510.158538-1-cmmazzo@icloud.com/T/#t), built off of Tim Guttzeit's code, which is how Windows Dynamic Lighting controls devices like this. I'm also working on a driver for proper sleep residency; I may also end up contributing to OpenRGB so this page isn't a requirement to control lights on this laptop. **Don't expect any updates to this page soon.**
+
 ## Background
-Currently, this repo serves as my documentation of Acer's Keyboard RGB protocal which was found by reverse engineering. This also serves as a proof of concept for other laptops and **WILL** be developed into an app later.
+Currently, this repo serves as my documentation of Acer's Keyboard RGB protocol which was found by reverse engineering. This also serves as a proof of concept for other laptops and will be developed into an app later. 
+
+This currently supports the **keyboard ONLY**, the other lights can be controlled with [fcrespo82's daemon](https://github.com/fcrespo82/acer-lighting-daemon)
+<details>
+<summary>If you're open to compiling you own kernel...</summary>
+  
+   ---
+   
+   ### Info
+   This is built off of Tim Guttzeit's original LampArray driver; this adds very basic support to all RGB lights on this device via LampArray support; more information can be found on the [LKML](https://lore.kernel.org/linux-input/20260828144510.158538-1-cmmazzo@icloud.com/T/#t) 
+   ### Instructions
+   Simply apply V5.patch found in the directory to a 7.2 kernel (others may be supported, but they are untested) and ensure it is enabled in .config.
+
+   There may be another version of this code on the LKML as review continues, so please check there first; this is just the first working version.
+
+   .config needs HID=y, HID_GENERIC=y, LEDS_CLASS=y, LEDS_CLASS_MULTICOLOR=y, and HID_LAMPARRAY=y
+   
+   The lights will default to black on startup and the range for the values below is 0-255
+   ### Basic usage
+   #### RGB Values
+   echo `<r> <g> <b>` to `/sys/class/leds/<HID_ID>:rgb:lamparray-<zone>/multi_intensity`
+   #### Brightness
+   echo `<brightness>` to `/sys/class/leds/<HID_ID>:rgb:lamparray-<zone>/brightness`
+   
+   ---
+</details>
+   
 
 This was all tested with an Acer Predator Triton 14 AI (PT14-52T) under Fedora Linux 44 and Arch Linux, but it should work across distros since it only uses HID calls, which also means that this (usually) works without super user privileges!
 
 RGB is (officially) supported on Windows 11 only, so there are several unsupported features under Linux. [Jafar Akhondali](https://github.com/JafarAkhondali/acer-predator-turbo-and-rgb-keyboard-linux-module), [0x7375646](https://github.com/0x7375646F/Linuwu-Sense), and [fcrespo82](https://github.com/fcrespo82/acer-lighting-daemon) attempt so solve these issues, but they do not fully support this laptop, so I decided to make my own project that aims to support it. 
 
-A complete compatability guide can be found at _coming soon._
+A complete compatibility guide can be found at _coming soon._
 
 ---
 
